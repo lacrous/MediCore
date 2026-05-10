@@ -39,16 +39,23 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 }
 
 const pageVariants = {
-  initial: { opacity: 0, x: 20 },
-  animate: { opacity: 1, x: 0 },
-  exit: { opacity: 0, x: -20 },
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -15 },
 };
 
 function AnimatedOutlet() {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
-      <motion.div key={location.pathname} variants={pageVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}>
+      <motion.div
+        key={location.pathname}
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+      >
         <Routes location={location}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/appointments" element={<Appointments />} />

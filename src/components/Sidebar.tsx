@@ -1,6 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import {
-  LayoutDashboard, CalendarCheck, Users, Pill, CreditCard, Settings, Hospital, CalendarDays, FileText, ClipboardList, FlaskConical, Stethoscope,
+  LayoutDashboard, CalendarCheck, Users, Pill, CreditCard, Settings, Hospital, CalendarDays, FileText, ClipboardList,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Avatar from './Avatar';
@@ -15,8 +15,6 @@ const navItems: { icon: React.ElementType; labelKey: string; path: string; roles
   { icon: CalendarDays, labelKey: 'app.calendar', path: '/calendar' },
   { icon: Users, labelKey: 'sidebar.patients', path: '/patients' },
   { icon: FileText, labelKey: 'app.prescriptions', path: '/prescriptions', roles: ['admin', 'doctor', 'nurse'] },
-  { icon: FlaskConical, labelKey: 'app.laboratory', path: '/lab-tests', roles: ['admin', 'doctor', 'nurse'] },
-  { icon: Stethoscope, labelKey: 'app.doctors', path: '/doctors' },
   { icon: Pill, labelKey: 'sidebar.pharmacy', path: '/pharmacy' },
   { icon: CreditCard, labelKey: 'sidebar.billing', path: '/billing', roles: ['admin', 'receptionist'] },
   { icon: ClipboardList, labelKey: 'app.auditLogs', path: '/audit-logs', roles: ['admin'] },
@@ -64,44 +62,53 @@ export default function Sidebar({ collapsed = false }: SidebarProps) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-2 space-y-1">
+      <nav className="flex-1 px-3 py-2 space-y-1" style={{ perspective: 800 }}>
         {visibleNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
 
           return (
-            <NavLink
+            <motion.div
               key={item.path}
-              to={item.path}
-              end
-              className={`relative flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer transition-all duration-200 no-underline ${!isActive ? 'hover:bg-[var(--mc-surface-elevated)]' : ''}`}
-              style={({ isActive }: { isActive: boolean }) => isActive ? { backgroundColor: 'var(--mc-orange-muted)' } : {}}
+              whileHover={{ scale: 1.03, z: 20 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 350, damping: 20 }}
+              style={{ transformStyle: 'preserve-3d' }}
             >
-              {isActive && (
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 w-[3px] h-6 rounded"
-                  style={{
-                    backgroundColor: 'var(--mc-gold)',
-                    boxShadow: '0 0 8px rgba(212,175,55,0.4)',
-                    left: isRTL ? 'auto' : 0,
-                    right: isRTL ? 0 : 'auto',
-                    borderRadius: isRTL ? '4px 0 0 4px' : '0 4px 4px 0',
-                  }}
-                />
-              )}
-              {isActive && !collapsed && (
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
-                  style={{ backgroundColor: 'var(--mc-gold)', left: isRTL ? 'auto' : 4, right: isRTL ? 4 : 'auto' }}
-                />
-              )}
-              <Icon size={20} style={{ color: isActive ? 'var(--mc-orange)' : 'var(--mc-text-secondary)', flexShrink: 0 }} />
-              {!collapsed && (
-                <span className={`text-sm ${isActive ? 'font-semibold' : 'font-medium'}`} style={{ color: isActive ? 'var(--mc-orange)' : 'var(--mc-text-secondary)' }}>
-                  {t(item.labelKey)}
-                </span>
-              )}
-            </NavLink>
+              <NavLink
+                to={item.path}
+                end
+                className={`relative flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer transition-all duration-200 no-underline ${!isActive ? 'hover:bg-[var(--mc-surface-elevated)]' : ''}`}
+                style={({ isActive }: { isActive: boolean }) => isActive ? { backgroundColor: 'var(--mc-orange-muted)' } : {}}
+              >
+                {isActive && (
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 w-[3px] h-6 rounded"
+                    style={{
+                      backgroundColor: 'var(--mc-gold)',
+                      boxShadow: '0 0 8px rgba(212,175,55,0.4)',
+                      left: isRTL ? 'auto' : 0,
+                      right: isRTL ? 0 : 'auto',
+                      borderRadius: isRTL ? '4px 0 0 4px' : '0 4px 4px 0',
+                    }}
+                  />
+                )}
+                {isActive && !collapsed && (
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
+                    style={{ backgroundColor: 'var(--mc-gold)', left: isRTL ? 'auto' : 4, right: isRTL ? 4 : 'auto' }}
+                  />
+                )}
+                <motion.div whileHover={{ rotateZ: 10, scale: 1.15 }} transition={{ type: 'spring', stiffness: 400 }}>
+                  <Icon size={20} style={{ color: isActive ? 'var(--mc-orange)' : 'var(--mc-text-secondary)', flexShrink: 0 }} />
+                </motion.div>
+                {!collapsed && (
+                  <span className={`text-sm ${isActive ? 'font-semibold' : 'font-medium'}`} style={{ color: isActive ? 'var(--mc-orange)' : 'var(--mc-text-secondary)' }}>
+                    {t(item.labelKey)}
+                  </span>
+                )}
+              </NavLink>
+            </motion.div>
           );
         })}
       </nav>

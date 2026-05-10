@@ -10,12 +10,11 @@ import { useLanguage } from '@/context/LanguageContext';
 const patientSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   dateOfBirth: z.string().min(1, 'Date of birth is required'),
-  nationalId: z.string().min(5, 'National ID must be at least 5 characters'),
+  nationalId: z.string().optional().or(z.literal('')),
   email: z.string().email('Invalid email address').optional().or(z.literal('')),
-  phone: z.string().min(8, 'Phone must be at least 8 digits'),
+  phone: z.string().optional().or(z.literal('')),
   gender: z.enum(['Male', 'Female'], { message: 'Select a gender' }),
-  address: z.string().min(5, 'Address must be at least 5 characters'),
-  allergies: z.string().optional(),
+  address: z.string().optional().or(z.literal('')),
 });
 
 export type PatientFormData = z.infer<typeof patientSchema>;
@@ -76,20 +75,7 @@ export default function PatientForm({ onSubmit, onCancel }: Props) {
           {errors.dateOfBirth && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs mt-1 flex items-center gap-1" style={errorStyle}><AlertCircle size={10} />{errors.dateOfBirth.message}</motion.p>}
         </div>
         <div>
-          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('patients.nationalId')} *</label>
-          <input {...register('nationalId')} className={inputClass} style={{ ...inputStyle, borderColor: errors.nationalId ? 'var(--mc-red)' : 'var(--mc-border)' }} placeholder={t('patients.enterNationalId')} />
-          {errors.nationalId && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs mt-1 flex items-center gap-1" style={errorStyle}><AlertCircle size={10} />{errors.nationalId.message}</motion.p>}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('app.patients')} ({isRTL ? 'الهاتف' : 'Phone'}) *</label>
-          <input {...register('phone')} type="tel" className={inputClass} style={{ ...inputStyle, borderColor: errors.phone ? 'var(--mc-red)' : 'var(--mc-border)' }} placeholder="+1 234 567 8901" />
-          {errors.phone && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs mt-1 flex items-center gap-1" style={errorStyle}><AlertCircle size={10} />{errors.phone.message}</motion.p>}
-        </div>
-        <div>
-          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('app.patients')} ({isRTL ? 'الجنس' : 'Gender'}) *</label>
+          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{isRTL ? 'الجنس' : 'Gender'} *</label>
           <select {...register('gender')} className={inputClass} style={{ ...inputStyle, borderColor: errors.gender ? 'var(--mc-red)' : 'var(--mc-border)' }}>
             <option value="">{t('patients.selectGender')}</option>
             <option value="Male">{t('patients.male')}</option>
@@ -101,20 +87,28 @@ export default function PatientForm({ onSubmit, onCancel }: Props) {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>Email ({isRTL ? 'اختياري' : 'Optional'})</label>
+          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('patients.nationalId')}</label>
+          <input {...register('nationalId')} inputMode="numeric" className={inputClass} style={{ ...inputStyle, borderColor: errors.nationalId ? 'var(--mc-red)' : 'var(--mc-border)' }} placeholder={isRTL ? '30010170101701' : '30010170101701'} />
+          {errors.nationalId && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs mt-1 flex items-center gap-1" style={errorStyle}><AlertCircle size={10} />{errors.nationalId.message}</motion.p>}
+        </div>
+        <div>
+          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{isRTL ? 'الهاتف' : 'Phone'}</label>
+          <input {...register('phone')} type="tel" inputMode="numeric" className={inputClass} style={{ ...inputStyle, borderColor: errors.phone ? 'var(--mc-red)' : 'var(--mc-border)' }} placeholder={isRTL ? '01xxxxxxxxx' : '01x xxxx xxxx'} dir="ltr" />
+          {errors.phone && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs mt-1 flex items-center gap-1" style={errorStyle}><AlertCircle size={10} />{errors.phone.message}</motion.p>}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>Email</label>
           <input {...register('email')} type="email" className={inputClass} style={{ ...inputStyle, borderColor: errors.email ? 'var(--mc-red)' : 'var(--mc-border)' }} placeholder="email@example.com" />
           {errors.email && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs mt-1 flex items-center gap-1" style={errorStyle}><AlertCircle size={10} />{errors.email.message}</motion.p>}
         </div>
         <div>
-          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('patients.address')} *</label>
-          <input {...register('address')} className={inputClass} style={{ ...inputStyle, borderColor: errors.address ? 'var(--mc-red)' : 'var(--mc-border)' }} placeholder="123 Medical St, Cairo, Egypt" />
+          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('patients.address')}</label>
+          <input {...register('address')} className={inputClass} style={{ ...inputStyle, borderColor: errors.address ? 'var(--mc-red)' : 'var(--mc-border)' }} placeholder={isRTL ? 'شارع القصر العيني، القاهرة، مصر' : 'El-Kasr El-Aini St, Cairo, Egypt'} />
           {errors.address && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs mt-1 flex items-center gap-1" style={errorStyle}><AlertCircle size={10} />{errors.address.message}</motion.p>}
         </div>
-      </div>
-
-      <div>
-        <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('patients.allergiesOptional')}</label>
-        <input {...register('allergies')} className={inputClass} style={inputStyle} placeholder="e.g., Penicillin, Latex" />
       </div>
 
       <div className="flex justify-end gap-3 pt-2">

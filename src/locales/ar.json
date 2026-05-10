@@ -157,9 +157,10 @@
     "allergiesOptional": "الحساسية (اختياري)",
     "selectGender": "اختر الجنس",
     "dateOfBirthRequired": "تاريخ الميلاد مطلوب",
-    "nationalIdRequired": "الرقم القومي مطلوب",
+    "nationalIdRequired": "الرقم القومي يجب أن يكون 14 رقم",
+    "phoneError": "رقم الهاتف يجب أن يكون 11 رقم بالضبط",
     "enterFullName": "أدخل الاسم الكامل",
-    "enterNationalId": "أدخل الرقم القومي",
+    "enterNationalId": "30101270101701",
     "addPatientBtn": "إضافة مريض"
   },
   "pharmacy": {

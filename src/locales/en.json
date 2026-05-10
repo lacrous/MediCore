@@ -157,9 +157,10 @@
     "allergiesOptional": "Allergies (Optional)",
     "selectGender": "Select gender",
     "dateOfBirthRequired": "Date of birth is required",
-    "nationalIdRequired": "National ID is required",
+    "nationalIdRequired": "National ID must be exactly 14 digits",
+    "phoneError": "Phone must be exactly 11 digits",
     "enterFullName": "Enter full name",
-    "enterNationalId": "Enter national ID",
+    "enterNationalId": "30010170101701",
     "addPatientBtn": "Add Patient"
   },
   "pharmacy": {

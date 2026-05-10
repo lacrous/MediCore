@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Users, CalendarCheck, Stethoscope, DollarSign, TrendingUp, TrendingDown, Activity, UserPlus, Pill, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell } from 'recharts';
 import { Link } from 'react-router-dom';
@@ -26,27 +26,75 @@ function StatCard({ icon: Icon, label, value, trend, positive, accent, sparkData
   const c = colors[accent];
   const TrendIcon = positive ? TrendingUp : TrendingDown;
 
+  const x = useMotionValue(0.5);
+  const y = useMotionValue(0.5);
+  const springConfig = { damping: 25, stiffness: 180 };
+  const rotateX = useSpring(useTransform(y, [0, 1], [10, -10]), springConfig);
+  const rotateY = useSpring(useTransform(x, [0, 1], [-10, 10]), springConfig);
+  const glowX = useTransform(x, [0, 1], ['0%', '100%']);
+  const glowY = useTransform(y, [0, 1], ['0%', '100%']);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    x.set((e.clientX - rect.left) / rect.width);
+    y.set((e.clientY - rect.top) / rect.height);
+  };
+  const handleMouseLeave = () => { x.set(0.5); y.set(0.5); };
+
+  const glowColor = accent === 'gold' ? 'rgba(212,175,55,0.15)' : accent === 'orange' ? 'rgba(255,107,0,0.12)' : accent === 'green' ? 'rgba(34,197,94,0.12)' : 'rgba(59,130,246,0.12)';
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.35, delay: 0.15 + index * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="rounded-2xl p-6 shadow-mc-card transition-all duration-200 hover:shadow-mc-card-hover hover:-translate-y-0.5 relative overflow-hidden"
-      style={{ backgroundColor: 'var(--mc-surface)' }}
+      initial={{ opacity: 0, y: 20, scale: 0.98, rotateX: 10 }}
+      animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+      transition={{ duration: 0.5, delay: 0.15 + index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="relative"
+      style={{ perspective: 1000 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
-      <div className="absolute top-0 start-4 end-4 h-px rounded-full" style={{ backgroundColor: 'rgba(128,128,128,0.08)' }} />
-      <div className="flex items-center justify-between">
-        <div className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: c.bg }}>
-          <Icon size={22} style={{ color: c.icon }} />
+      <motion.div
+        className="rounded-2xl p-6 shadow-mc-card relative overflow-hidden"
+        style={{
+          backgroundColor: 'var(--mc-surface)',
+          rotateX,
+          rotateY,
+          transformStyle: 'preserve-3d',
+        }}
+        whileHover={{ boxShadow: '0 20px 60px rgba(0,0,0,0.15)', y: -4 }}
+        transition={{ duration: 0.3 }}
+      >
+        {/* 3D glow */}
+        <motion.div
+          className="absolute inset-0 rounded-2xl pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at ${useTransform(glowX, v => v)} ${useTransform(glowY, v => v)}, ${glowColor}, transparent 60%)`,
+            opacity: 1,
+          }}
+        />
+        <div style={{ transform: 'translateZ(20px)' }}>
+          <div className="absolute top-0 start-4 end-4 h-px rounded-full" style={{ backgroundColor: 'rgba(128,128,128,0.08)' }} />
+          <div className="flex items-center justify-between">
+            <motion.div
+              className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: c.bg }}
+              whileHover={{ scale: 1.15, rotateZ: 10 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
+              <Icon size={22} style={{ color: c.icon }} />
+            </motion.div>
+            <div style={{ transform: 'translateZ(10px)' }}>
+              <Sparkline data={sparkData} color={c.icon} width={80} height={36} />
+            </div>
+          </div>
+          <div className="mt-4 text-[32px] font-bold leading-tight tracking-tight" style={{ color: 'var(--mc-text-primary)', transform: 'translateZ(15px)' }}>{value}</div>
+          <div className="mt-1 text-[13px] font-medium" style={{ color: 'var(--mc-text-secondary)' }}>{label}</div>
+          <div className="flex items-center gap-1.5 mt-2">
+            <TrendIcon size={12} style={{ color: positive ? 'var(--mc-green)' : 'var(--mc-red)' }} />
+            <span className="text-xs font-medium" style={{ color: positive ? 'var(--mc-green)' : 'var(--mc-red)' }}>{trend}</span>
+          </div>
         </div>
-        <Sparkline data={sparkData} color={c.icon} width={80} height={36} />
-      </div>
-      <div className="mt-4 text-[32px] font-bold leading-tight tracking-tight" style={{ color: 'var(--mc-text-primary)' }}>{value}</div>
-      <div className="mt-1 text-[13px] font-medium" style={{ color: 'var(--mc-text-secondary)' }}>{label}</div>
-      <div className="flex items-center gap-1.5 mt-2">
-        <TrendIcon size={12} style={{ color: positive ? 'var(--mc-green)' : 'var(--mc-red)' }} />
-        <span className="text-xs font-medium" style={{ color: positive ? 'var(--mc-green)' : 'var(--mc-red)' }}>{trend}</span>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
