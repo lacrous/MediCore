@@ -8,6 +8,7 @@ import StatusBadge from '@/components/StatusBadge';
 import Skeleton, { StatCardsSkeleton } from '@/components/Skeleton';
 import { useDashboard } from '@/hooks/useApi';
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 import SmartAlerts from '@/components/SmartAlerts';
 
 const COLORS = ['#D4AF37', '#FF6B00', '#22C55E', '#3B82F6', '#EF4444'];
@@ -45,7 +46,6 @@ function StatCard({ icon: Icon, label, value, trend, positive, accent, sparkData
       <div className="flex items-center gap-1.5 mt-2">
         <TrendIcon size={12} style={{ color: positive ? 'var(--mc-green)' : 'var(--mc-red)' }} />
         <span className="text-xs font-medium" style={{ color: positive ? 'var(--mc-green)' : 'var(--mc-red)' }}>{trend}</span>
-        <span className="text-xs" style={{ color: 'var(--mc-text-muted)' }}>from last month</span>
       </div>
     </motion.div>
   );
@@ -68,6 +68,7 @@ function ActivityItem({ icon: Icon, iconBg, iconColor, title, time }: { icon: Re
 export default function Dashboard() {
   const { data: stats, isLoading } = useDashboard();
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   if (isLoading || !stats) {
     return (
@@ -86,20 +87,20 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
-        <h1 className="text-2xl font-semibold tracking-tight" style={{ color: 'var(--mc-text-primary)' }}>Welcome back, {user?.name || 'Doctor'}</h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--mc-text-secondary)' }}>Here's what's happening at MediCore today</p>
+        <h1 className="text-2xl font-semibold tracking-tight" style={{ color: 'var(--mc-text-primary)' }}>{t('dashboard.welcome')} {user?.name || 'Doctor'}</h1>
+        <p className="text-sm mt-1" style={{ color: 'var(--mc-text-secondary)' }}>{t('dashboard.subtitle')}</p>
       </motion.div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
         <Link to="/patients" className="no-underline">
-          <StatCard icon={Users} label="Total Patients" value={String(stats.totalPatients)} trend={stats.patientChange} positive accent="gold" sparkData={[20,28,24,35,42]} index={0} />
+          <StatCard icon={Users} label={t('dashboard.totalPatients')} value={String(stats.totalPatients)} trend={stats.patientChange} positive accent="gold" sparkData={[20,28,24,35,42]} index={0} />
         </Link>
         <Link to="/appointments" className="no-underline">
-          <StatCard icon={CalendarCheck} label="Today's Appointments" value={String(stats.todayAppointments)} trend={stats.appointmentChange} positive accent="orange" sparkData={[15,18,22,20,24]} index={1} />
+          <StatCard icon={CalendarCheck} label={t('dashboard.todaysAppointments')} value={String(stats.todayAppointments)} trend={stats.appointmentChange} positive accent="orange" sparkData={[15,18,22,20,24]} index={1} />
         </Link>
-        <StatCard icon={Stethoscope} label="Available Doctors" value={String(stats.availableDoctors)} trend="-2.1%" positive={false} accent="gold" sparkData={[22,20,21,18,18]} index={2} />
+        <StatCard icon={Stethoscope} label={t('dashboard.availableDoctors')} value={String(stats.availableDoctors)} trend="-2.1%" positive={false} accent="gold" sparkData={[22,20,21,18,18]} index={2} />
         <Link to="/billing" className="no-underline">
-          <StatCard icon={DollarSign} label="Revenue This Month" value={`$${stats.revenueThisMonth.toLocaleString()}`} trend={stats.revenueChange} positive accent="gold" sparkData={[30,35,42,48,55]} index={3} />
+          <StatCard icon={DollarSign} label={t('dashboard.revenueThisMonth')} value={`$${stats.revenueThisMonth.toLocaleString()}`} trend={stats.revenueChange} positive accent="gold" sparkData={[30,35,42,48,55]} index={3} />
         </Link>
       </div>
 
@@ -111,12 +112,12 @@ export default function Dashboard() {
           className="lg:col-span-2 rounded-2xl p-6 shadow-mc-card" style={{ backgroundColor: 'var(--mc-surface)' }}>
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-lg font-semibold" style={{ color: 'var(--mc-text-primary)' }}>Weekly Appointments</h2>
-              <p className="text-xs mt-0.5" style={{ color: 'var(--mc-text-muted)' }}>Jan 11 — Jan 17, 2026</p>
+              <h2 className="text-lg font-semibold" style={{ color: 'var(--mc-text-primary)' }}>{t('dashboard.weeklyAppointments')}</h2>
+              <p className="text-xs mt-0.5" style={{ color: 'var(--mc-text-muted)' }}>{t('dashboard.weeklySubtitle')}</p>
             </div>
             <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--mc-text-secondary)' }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--mc-orange)' }} />Scheduled</span>
-              <span className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--mc-text-secondary)' }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--mc-gold)' }} />Completed</span>
+              <span className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--mc-text-secondary)' }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--mc-orange)' }} />{t('dashboard.scheduled')}</span>
+              <span className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--mc-text-secondary)' }}><span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--mc-gold)' }} />{t('dashboard.completed')}</span>
             </div>
           </div>
           <ResponsiveContainer width="100%" height={240}>
@@ -134,8 +135,8 @@ export default function Dashboard() {
         {/* Revenue Area Chart */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.5 }}
           className="rounded-2xl p-6 shadow-mc-card" style={{ backgroundColor: 'var(--mc-surface)' }}>
-          <h2 className="text-lg font-semibold mb-1" style={{ color: 'var(--mc-text-primary)' }}>Revenue Trend</h2>
-          <p className="text-xs mb-4" style={{ color: 'var(--mc-text-muted)' }}>Jul — Dec 2025</p>
+          <h2 className="text-lg font-semibold mb-1" style={{ color: 'var(--mc-text-primary)' }}>{t('dashboard.weeklySubtitle')}</h2>
+          <p className="text-xs mb-4" style={{ color: 'var(--mc-text-muted)' }}>{t('dashboard.weeklySubtitle')}</p>
           <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={stats.revenueData}>
               <defs>
@@ -153,12 +154,12 @@ export default function Dashboard() {
           </ResponsiveContainer>
           <div className="mt-4 flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: 'var(--mc-bg)' }}>
             <div>
-              <p className="text-xs" style={{ color: 'var(--mc-text-muted)' }}>6-Month Total</p>
+              <p className="text-xs" style={{ color: 'var(--mc-text-muted)' }}>{t('dashboard.totalRevenue')}</p>
               <p className="text-lg font-bold" style={{ color: 'var(--mc-gold)' }}>${stats.totalRevenueAll.toLocaleString()}</p>
             </div>
             <div className="text-end">
               <p className="text-xs font-medium" style={{ color: 'var(--mc-green)' }}>{stats.revenueChange}</p>
-              <p className="text-xs" style={{ color: 'var(--mc-text-muted)' }}>vs prev 6mo</p>
+              <p className="text-xs" style={{ color: 'var(--mc-text-muted)' }}>{t('app.fromLastMonth')}</p>
             </div>
           </div>
         </motion.div>
@@ -168,7 +169,7 @@ export default function Dashboard() {
         {/* Department Pie Chart */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.55 }}
           className="rounded-2xl p-6 shadow-mc-card" style={{ backgroundColor: 'var(--mc-surface)' }}>
-          <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--mc-text-primary)' }}>Department Overview</h2>
+          <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--mc-text-primary)' }}>{t('dashboard.departmentOverview')}</h2>
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
               <Pie data={stats.departments} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={4} dataKey="patients">
@@ -190,14 +191,14 @@ export default function Dashboard() {
         {/* Recent Activity */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.55 }}
           className="rounded-2xl p-6 shadow-mc-card" style={{ backgroundColor: 'var(--mc-surface)' }}>
-          <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--mc-text-primary)' }}>Recent Activity</h2>
+          <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--mc-text-primary)' }}>{t('dashboard.recentActivity')}</h2>
           <div className="space-y-1">
-            <ActivityItem icon={UserPlus} iconBg="var(--mc-orange-muted)" iconColor="var(--mc-orange)" title="New patient: Charlotte Clark" time="2 min ago" />
-            <ActivityItem icon={CheckCircle2} iconBg="var(--mc-green-bg)" iconColor="var(--mc-green)" title="Appointment completed" time="15 min ago" />
-            <ActivityItem icon={AlertCircle} iconBg="var(--mc-red-bg)" iconColor="var(--mc-red)" title="Low stock: Amoxicillin" time="32 min ago" />
-            <ActivityItem icon={Activity} iconBg="var(--mc-blue-bg)" iconColor="var(--mc-blue)" title="Dr. Chen updated schedule" time="1 hour ago" />
-            <ActivityItem icon={Pill} iconBg="var(--mc-gold-muted)" iconColor="var(--mc-gold)" title="Prescription filled" time="2 hours ago" />
-            <ActivityItem icon={Clock} iconBg="var(--mc-amber-bg)" iconColor="var(--mc-amber)" title="Appointment rescheduled" time="3 hours ago" />
+            <ActivityItem icon={UserPlus} iconBg="var(--mc-orange-muted)" iconColor="var(--mc-orange)" title={t('dashboard.newPatient')} time={t('dashboard.minAgo').replace('{}', '2')} />
+            <ActivityItem icon={CheckCircle2} iconBg="var(--mc-green-bg)" iconColor="var(--mc-green)" title={t('dashboard.appointmentCompleted')} time={t('dashboard.minAgo').replace('{}', '15')} />
+            <ActivityItem icon={AlertCircle} iconBg="var(--mc-red-bg)" iconColor="var(--mc-red)" title={t('dashboard.lowStock')} time={t('dashboard.minAgo').replace('{}', '32')} />
+            <ActivityItem icon={Activity} iconBg="var(--mc-blue-bg)" iconColor="var(--mc-blue)" title={t('dashboard.scheduleUpdated')} time={t('dashboard.hourAgo').replace('{}', '1')} />
+            <ActivityItem icon={Pill} iconBg="var(--mc-gold-muted)" iconColor="var(--mc-gold)" title={t('dashboard.prescriptionFilled')} time={t('dashboard.hoursAgo').replace('{}', '2')} />
+            <ActivityItem icon={Clock} iconBg="var(--mc-amber-bg)" iconColor="var(--mc-amber)" title={t('dashboard.appointmentRescheduled')} time={t('dashboard.hoursAgo').replace('{}', '3')} />
           </div>
         </motion.div>
 
@@ -205,8 +206,8 @@ export default function Dashboard() {
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.6 }}
           className="rounded-2xl p-6 shadow-mc-card" style={{ backgroundColor: 'var(--mc-surface)' }}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold" style={{ color: 'var(--mc-text-primary)' }}>Upcoming Appointments</h2>
-            <Link to="/appointments" className="text-xs font-medium hover:underline" style={{ color: 'var(--mc-orange)' }}>View all</Link>
+            <h2 className="text-lg font-semibold" style={{ color: 'var(--mc-text-primary)' }}>{t('dashboard.upcomingAppointments')}</h2>
+            <Link to="/appointments" className="text-xs font-medium hover:underline" style={{ color: 'var(--mc-orange)' }}>{t('dashboard.viewAll')}</Link>
           </div>
           <div className="space-y-3">
             {[

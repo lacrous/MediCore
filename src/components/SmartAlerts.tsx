@@ -2,26 +2,28 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, X, Pill, UserX, CreditCard, ChevronRight, Bell } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface AlertItem {
   id: string;
   type: 'critical' | 'warning' | 'info';
   icon: React.ElementType;
-  title: string;
-  message: string;
+  titleKey: string;
+  messageKey: string;
   link: string;
-  time: string;
+  timeKey: string;
 }
 
 const defaultAlerts: AlertItem[] = [
-  { id: '1', type: 'critical', icon: AlertTriangle, title: 'Critical Patient Alert', message: 'William Davis (P-2026-004) BP critical at 150/95', link: '/patients/P-2026-004', time: '2 min ago' },
-  { id: '2', type: 'warning', icon: Pill, title: 'Low Stock Warning', message: 'Metformin 850mg down to 45 units. Reorder needed.', link: '/pharmacy', time: '15 min ago' },
-  { id: '3', type: 'warning', icon: Pill, title: 'Out of Stock', message: 'Albuterol Inhaler is completely out of stock.', link: '/pharmacy', time: '32 min ago' },
-  { id: '4', type: 'info', icon: CreditCard, title: 'Overdue Payment', message: 'Invoice INV-2026-005 ($180) is 7 days overdue.', link: '/billing', time: '1 hour ago' },
-  { id: '5', type: 'info', icon: UserX, title: 'No-show Alert', message: 'Liam Anderson missed appointment today at 11:30 AM.', link: '/appointments', time: '2 hours ago' },
+  { id: '1', type: 'critical', icon: AlertTriangle, titleKey: 'dashboard.critical', messageKey: 'William Davis (P-2026-004) BP critical at 150/95', link: '/patients/P-2026-004', timeKey: '2 min ago' },
+  { id: '2', type: 'warning', icon: Pill, titleKey: 'pharmacy.lowStock', messageKey: 'Metformin 850mg down to 45 units. Reorder needed.', link: '/pharmacy', timeKey: '15 min ago' },
+  { id: '3', type: 'warning', icon: Pill, titleKey: 'pharmacy.outOfStock', messageKey: 'Albuterol Inhaler is completely out of stock.', link: '/pharmacy', timeKey: '32 min ago' },
+  { id: '4', type: 'info', icon: CreditCard, titleKey: 'billing.overdue', messageKey: 'Invoice INV-2026-005 ($180) is 7 days overdue.', link: '/billing', timeKey: '1 hour ago' },
+  { id: '5', type: 'info', icon: UserX, titleKey: 'dashboard.noShow', messageKey: 'Liam Anderson missed appointment today at 11:30 AM.', link: '/appointments', timeKey: '2 hours ago' },
 ];
 
 export default function SmartAlerts() {
+  const { t } = useLanguage();
   const [alerts] = useState<AlertItem[]>(defaultAlerts);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [expanded, setExpanded] = useState(true);
@@ -47,12 +49,12 @@ export default function SmartAlerts() {
             <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center text-white" style={{ backgroundColor: 'var(--mc-red)' }}>{visibleAlerts.length}</span>
           </div>
           <div>
-            <h2 className="text-base font-semibold" style={{ color: 'var(--mc-text-primary)' }}>Priority Alerts</h2>
-            <p className="text-xs" style={{ color: 'var(--mc-text-muted)' }}>{visibleAlerts.filter(a => a.type === 'critical').length} critical, {visibleAlerts.filter(a => a.type === 'warning').length} warnings</p>
+            <h2 className="text-base font-semibold" style={{ color: 'var(--mc-text-primary)' }}>{t('dashboard.priorityAlerts')}</h2>
+            <p className="text-xs" style={{ color: 'var(--mc-text-muted)' }}>{visibleAlerts.filter(a => a.type === 'critical').length} {t('dashboard.critical')?.toLowerCase()}, {visibleAlerts.filter(a => a.type === 'warning').length} {t('dashboard.warning')?.toLowerCase()}</p>
           </div>
         </div>
         <button onClick={() => setExpanded(!expanded)} className="text-xs font-medium hover:underline" style={{ color: 'var(--mc-orange)' }}>
-          {expanded ? 'Collapse' : 'Expand'}
+          {expanded ? t('dashboard.collapse') : t('dashboard.expand')}
         </button>
       </div>
       <AnimatePresence>
@@ -69,14 +71,14 @@ export default function SmartAlerts() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium truncate" style={{ color: 'var(--mc-text-primary)' }}>{alert.title}</p>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full font-medium flex-shrink-0" style={{ backgroundColor: c.bg, color: c.border }}>{alert.type}</span>
+                        <p className="text-sm font-medium truncate" style={{ color: 'var(--mc-text-primary)' }}>{t(alert.titleKey) || alert.titleKey}</p>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full font-medium flex-shrink-0" style={{ backgroundColor: c.bg, color: c.border }}>{t(`dashboard.${alert.type}`)}</span>
                       </div>
-                      <p className="text-xs mt-0.5" style={{ color: 'var(--mc-text-secondary)' }}>{alert.message}</p>
+                      <p className="text-xs mt-0.5" style={{ color: 'var(--mc-text-secondary)' }}>{alert.messageKey}</p>
                       <div className="flex items-center justify-between mt-1.5">
-                        <span className="text-[10px]" style={{ color: 'var(--mc-text-muted)' }}>{alert.time}</span>
+                        <span className="text-[10px]" style={{ color: 'var(--mc-text-muted)' }}>{alert.timeKey}</span>
                         <Link to={alert.link} className="flex items-center gap-1 text-[11px] font-medium hover:underline" style={{ color: 'var(--mc-orange)' }}>
-                          View <ChevronRight size={10} />
+                          {t('dashboard.view')} <ChevronRight size={10} />
                         </Link>
                       </div>
                     </div>

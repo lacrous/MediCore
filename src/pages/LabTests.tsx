@@ -4,7 +4,7 @@ import { Plus, Filter, CheckCircle2, Clock, AlertCircle, FileText } from 'lucide
 import PrimaryButton from '@/components/PrimaryButton';
 import DataTable from '@/components/DataTable';
 import Modal from '@/components/Modal';
-
+import { useLanguage } from '@/context/LanguageContext';
 
 interface LabTest {
   id: string;
@@ -46,26 +46,26 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default function LabTests() {
+  const { t } = useLanguage();
   const [showAdd, setShowAdd] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState('All');
 
-  const categories = ['All', 'Blood', 'Urine', 'Imaging', 'Cardiology'];
-  const filtered = categoryFilter === 'All' ? labTests : labTests.filter(l => l.category === categoryFilter);
+  const categories = [t('lab.allCategories') || 'All', 'Blood', 'Urine', 'Imaging', 'Cardiology'];
+  const filtered = categoryFilter === (t('lab.allCategories') || 'All') ? labTests : labTests.filter(l => l.category === categoryFilter);
 
   return (
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
-        <h1 className="text-2xl font-semibold tracking-tight" style={{ color: 'var(--mc-text-primary)' }}>Laboratory</h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--mc-text-secondary)' }}>Manage lab tests, results, and orders</p>
+        <h1 className="text-2xl font-semibold tracking-tight" style={{ color: 'var(--mc-text-primary)' }}>{t('lab.title')}</h1>
+        <p className="text-sm mt-1" style={{ color: 'var(--mc-text-secondary)' }}>{t('lab.subtitle')}</p>
       </motion.div>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: 'Total Tests', value: labTests.length, color: 'var(--mc-blue)' },
-          { label: 'Pending', value: labTests.filter(l => l.status === 'Pending').length, color: 'var(--mc-amber)' },
-          { label: 'In Progress', value: labTests.filter(l => l.status === 'In Progress').length, color: 'var(--mc-blue)' },
-          { label: 'Critical', value: labTests.filter(l => l.status === 'Critical').length, color: 'var(--mc-red)' },
+          { label: t('lab.totalTests'), value: labTests.length, color: 'var(--mc-blue)' },
+          { label: t('lab.pending'), value: labTests.filter(l => l.status === 'Pending').length, color: 'var(--mc-amber)' },
+          { label: t('lab.inProgress'), value: labTests.filter(l => l.status === 'In Progress').length, color: 'var(--mc-blue)' },
+          { label: t('lab.critical'), value: labTests.filter(l => l.status === 'Critical').length, color: 'var(--mc-red)' },
         ].map((s, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.05 }}
             className="rounded-xl p-4 shadow-mc-card" style={{ backgroundColor: 'var(--mc-surface)' }}>
@@ -75,7 +75,6 @@ export default function LabTests() {
         ))}
       </div>
 
-      {/* Filters + Add */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2">
           <Filter size={14} style={{ color: 'var(--mc-text-muted)' }} />
@@ -91,23 +90,22 @@ export default function LabTests() {
             ))}
           </div>
         </div>
-        <PrimaryButton icon={<Plus size={16} />} onClick={() => setShowAdd(true)}>Order Test</PrimaryButton>
+        <PrimaryButton icon={<Plus size={16} />} onClick={() => setShowAdd(true)}>{t('lab.orderTest')}</PrimaryButton>
       </div>
 
-      {/* Table */}
       <DataTable
         data={filtered}
         keyExtractor={r => r.id}
         searchKeys={['patientName', 'testName', 'doctor']}
         columns={[
-          { key: 'id', header: 'Test ID', sortable: true },
-          { key: 'patientName', header: 'Patient', sortable: true },
-          { key: 'testName', header: 'Test', sortable: true },
-          { key: 'category', header: 'Category', sortable: true },
-          { key: 'doctor', header: 'Doctor', sortable: true },
-          { key: 'date', header: 'Date', sortable: true },
-          { key: 'status', header: 'Status', sortable: true, render: row => <StatusBadge status={row.status} /> },
-          { key: 'result', header: 'Result', sortable: true, render: row => <span style={{ color: row.status === 'Critical' ? 'var(--mc-red)' : 'var(--mc-text-secondary)' }}>{row.result || '—'}</span> },
+          { key: 'id', header: t('lab.testId') || 'Test ID', sortable: true },
+          { key: 'patientName', header: t('lab.patient') || 'Patient', sortable: true },
+          { key: 'testName', header: t('lab.test') || 'Test', sortable: true },
+          { key: 'category', header: t('lab.category') || 'Category', sortable: true },
+          { key: 'doctor', header: t('lab.doctor') || 'Doctor', sortable: true },
+          { key: 'date', header: t('lab.date') || 'Date', sortable: true },
+          { key: 'status', header: t('lab.status') || 'Status', sortable: true, render: row => <StatusBadge status={row.status} /> },
+          { key: 'result', header: t('lab.result') || 'Result', sortable: true, render: row => <span style={{ color: row.status === 'Critical' ? 'var(--mc-red)' : 'var(--mc-text-secondary)' }}>{row.result || '—'}</span> },
         ]}
         actions={() => (
           <button className="p-1.5 rounded-lg hover:bg-[var(--mc-bg)] transition-colors" style={{ color: 'var(--mc-text-muted)' }}>
@@ -116,22 +114,21 @@ export default function LabTests() {
         )}
       />
 
-      {/* Add Modal */}
-      <Modal isOpen={showAdd} onClose={() => setShowAdd(false)} title="Order Lab Test">
+      <Modal isOpen={showAdd} onClose={() => setShowAdd(false)} title={t('lab.orderTest') || 'Order Lab Test'}>
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>Patient</label>
+            <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('lab.patient')}</label>
             <select className="w-full px-3 py-2 rounded-xl border text-sm outline-none" style={{ backgroundColor: 'var(--mc-bg)', borderColor: 'var(--mc-border)', color: 'var(--mc-text-primary)' }}>
-              <option>Select patient...</option>
+              <option>{t('lab.selectPatient')}</option>
               <option>Emma Johnson (P-2026-001)</option>
               <option>James Wilson (P-2026-002)</option>
               <option>William Davis (P-2026-004)</option>
             </select>
           </div>
           <div>
-            <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>Test</label>
+            <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('lab.test')}</label>
             <select className="w-full px-3 py-2 rounded-xl border text-sm outline-none" style={{ backgroundColor: 'var(--mc-bg)', borderColor: 'var(--mc-border)', color: 'var(--mc-text-primary)' }}>
-              <option>Select test...</option>
+              <option>{t('lab.selectTest')}</option>
               <option>Complete Blood Count (CBC)</option>
               <option>Lipid Profile</option>
               <option>HbA1c</option>
@@ -143,13 +140,13 @@ export default function LabTests() {
             </select>
           </div>
           <div>
-            <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>Notes</label>
-            <textarea rows={3} placeholder="Additional instructions..."
+            <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('lab.notes')}</label>
+            <textarea rows={3} placeholder={t('lab.additionalInstructions') || 'Additional instructions...'}
               className="w-full px-3 py-2 rounded-xl border text-sm outline-none resize-none" style={{ backgroundColor: 'var(--mc-bg)', borderColor: 'var(--mc-border)', color: 'var(--mc-text-primary)' }} />
           </div>
           <div className="flex justify-end gap-2">
-            <button onClick={() => setShowAdd(false)} className="px-4 py-2 rounded-xl text-sm border transition-all" style={{ borderColor: 'var(--mc-border)', color: 'var(--mc-text-primary)' }}>Cancel</button>
-            <PrimaryButton onClick={() => setShowAdd(false)}>Order Test</PrimaryButton>
+            <button onClick={() => setShowAdd(false)} className="px-4 py-2 rounded-xl text-sm border transition-all" style={{ borderColor: 'var(--mc-border)', color: 'var(--mc-text-primary)' }}>{t('app.cancel')}</button>
+            <PrimaryButton onClick={() => setShowAdd(false)}>{t('lab.orderTest')}</PrimaryButton>
           </div>
         </div>
       </Modal>

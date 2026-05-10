@@ -26,7 +26,7 @@ interface Props {
 }
 
 export default function PatientForm({ onSubmit, onCancel }: Props) {
-  const { isRTL } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const { register, handleSubmit, control, formState: { errors }, reset } = useForm<PatientFormData>({
     resolver: zodResolver(patientSchema),
   });
@@ -55,17 +55,15 @@ export default function PatientForm({ onSubmit, onCancel }: Props) {
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4" noValidate>
-      {/* Full Name */}
       <div>
-        <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{isRTL ? 'الاسم الكامل' : 'Full Name'} *</label>
-        <input {...register('name')} className={inputClass} style={{ ...inputStyle, borderColor: errors.name ? 'var(--mc-red)' : 'var(--mc-border)' }} placeholder={isRTL ? 'أدخل الاسم الكامل' : 'Enter full name'} />
+        <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('patients.fullName')} *</label>
+        <input {...register('name')} className={inputClass} style={{ ...inputStyle, borderColor: errors.name ? 'var(--mc-red)' : 'var(--mc-border)' }} placeholder={t('patients.enterFullName')} />
         {errors.name && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs mt-1 flex items-center gap-1" style={errorStyle}><AlertCircle size={10} />{errors.name.message}</motion.p>}
       </div>
 
-      {/* Date of Birth + National ID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{isRTL ? 'تاريخ الميلاد' : 'Date of Birth'} *</label>
+          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('patients.dateOfBirth')} *</label>
           <div className="relative">
             <input {...register('dateOfBirth')} type="date" className={inputClass + ' pr-10'} style={{ ...inputStyle, borderColor: errors.dateOfBirth ? 'var(--mc-red)' : 'var(--mc-border)' }} />
             <Calendar size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--mc-text-muted)' }} />
@@ -78,31 +76,29 @@ export default function PatientForm({ onSubmit, onCancel }: Props) {
           {errors.dateOfBirth && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs mt-1 flex items-center gap-1" style={errorStyle}><AlertCircle size={10} />{errors.dateOfBirth.message}</motion.p>}
         </div>
         <div>
-          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{isRTL ? 'الرقم القومي' : 'National ID'} *</label>
-          <input {...register('nationalId')} className={inputClass} style={{ ...inputStyle, borderColor: errors.nationalId ? 'var(--mc-red)' : 'var(--mc-border)' }} placeholder={isRTL ? 'أدخل الرقم القومي' : 'Enter national ID'} />
+          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('patients.nationalId')} *</label>
+          <input {...register('nationalId')} className={inputClass} style={{ ...inputStyle, borderColor: errors.nationalId ? 'var(--mc-red)' : 'var(--mc-border)' }} placeholder={t('patients.enterNationalId')} />
           {errors.nationalId && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs mt-1 flex items-center gap-1" style={errorStyle}><AlertCircle size={10} />{errors.nationalId.message}</motion.p>}
         </div>
       </div>
 
-      {/* Phone + Gender */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{isRTL ? 'رقم الهاتف' : 'Phone'} *</label>
+          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('app.patients')} ({isRTL ? 'الهاتف' : 'Phone'}) *</label>
           <input {...register('phone')} type="tel" className={inputClass} style={{ ...inputStyle, borderColor: errors.phone ? 'var(--mc-red)' : 'var(--mc-border)' }} placeholder="+1 234 567 8901" />
           {errors.phone && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs mt-1 flex items-center gap-1" style={errorStyle}><AlertCircle size={10} />{errors.phone.message}</motion.p>}
         </div>
         <div>
-          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{isRTL ? 'الجنس' : 'Gender'} *</label>
+          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('app.patients')} ({isRTL ? 'الجنس' : 'Gender'}) *</label>
           <select {...register('gender')} className={inputClass} style={{ ...inputStyle, borderColor: errors.gender ? 'var(--mc-red)' : 'var(--mc-border)' }}>
-            <option value="">{isRTL ? 'اختر الجنس' : 'Select gender'}</option>
-            <option value="Male">{isRTL ? 'ذكر' : 'Male'}</option>
-            <option value="Female">{isRTL ? 'أنثى' : 'Female'}</option>
+            <option value="">{t('patients.selectGender')}</option>
+            <option value="Male">{t('patients.male')}</option>
+            <option value="Female">{t('patients.female')}</option>
           </select>
           {errors.gender && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs mt-1 flex items-center gap-1" style={errorStyle}><AlertCircle size={10} />{errors.gender.message}</motion.p>}
         </div>
       </div>
 
-      {/* Email (Optional) + Address */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>Email ({isRTL ? 'اختياري' : 'Optional'})</label>
@@ -110,22 +106,20 @@ export default function PatientForm({ onSubmit, onCancel }: Props) {
           {errors.email && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs mt-1 flex items-center gap-1" style={errorStyle}><AlertCircle size={10} />{errors.email.message}</motion.p>}
         </div>
         <div>
-          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{isRTL ? 'العنوان' : 'Address'} *</label>
+          <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('patients.address')} *</label>
           <input {...register('address')} className={inputClass} style={{ ...inputStyle, borderColor: errors.address ? 'var(--mc-red)' : 'var(--mc-border)' }} placeholder="123 Medical St, Cairo, Egypt" />
           {errors.address && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs mt-1 flex items-center gap-1" style={errorStyle}><AlertCircle size={10} />{errors.address.message}</motion.p>}
         </div>
       </div>
 
-      {/* Allergies */}
       <div>
-        <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{isRTL ? 'الحساسية (اختياري)' : 'Allergies (Optional)'}</label>
+        <label className="text-sm font-medium mb-1 block" style={{ color: 'var(--mc-text-primary)' }}>{t('patients.allergiesOptional')}</label>
         <input {...register('allergies')} className={inputClass} style={inputStyle} placeholder="e.g., Penicillin, Latex" />
       </div>
 
-      {/* Actions */}
       <div className="flex justify-end gap-3 pt-2">
-        <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-sm font-medium border transition-all" style={{ borderColor: 'var(--mc-border)', color: 'var(--mc-text-primary)' }}>{isRTL ? 'إلغاء' : 'Cancel'}</button>
-        <button type="submit" className="px-4 py-2 rounded-xl text-sm font-medium transition-all hover:opacity-90" style={{ backgroundColor: 'var(--mc-orange)', color: 'white' }}>{isRTL ? 'إضافة مريض' : 'Add Patient'}</button>
+        <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-sm font-medium border transition-all" style={{ borderColor: 'var(--mc-border)', color: 'var(--mc-text-primary)' }}>{t('app.cancel')}</button>
+        <button type="submit" className="px-4 py-2 rounded-xl text-sm font-medium transition-all hover:opacity-90" style={{ backgroundColor: 'var(--mc-orange)', color: 'white' }}>{t('patients.addPatientBtn')}</button>
       </div>
     </form>
   );

@@ -39,13 +39,13 @@ const patientData = {
 };
 
 export default function PatientDetail() {
-  const { isRTL } = useLanguage();
+  const { t, isRTL } = useLanguage();
 
   return (
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
         <Link to="/patients" className="inline-flex items-center gap-1.5 text-sm mb-4 hover:underline" style={{ color: 'var(--mc-orange)' }}>
-          <ArrowLeft size={14} className={isRTL ? 'rotate-180' : ''} /> Back to Patients
+          <ArrowLeft size={14} className={isRTL ? 'rotate-180' : ''} /> {t('app.backToPatients')}
         </Link>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <Avatar name={patientData.name} size={56} />
@@ -63,13 +63,13 @@ export default function PatientDetail() {
         <div className="space-y-6">
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             className="rounded-2xl p-6 shadow-mc-card" style={{ backgroundColor: 'var(--mc-surface)' }}>
-            <h2 className="text-base font-semibold mb-4" style={{ color: 'var(--mc-text-primary)' }}>Contact Information</h2>
+            <h2 className="text-base font-semibold mb-4" style={{ color: 'var(--mc-text-primary)' }}>{t('patientDetail.contactInfo')}</h2>
             <div className="space-y-3">
               {[
                 { icon: Phone, value: patientData.phone },
                 { icon: Mail, value: patientData.email },
                 { icon: MapPin, value: patientData.address },
-                { icon: Calendar, value: `Registered: ${patientData.registered}` },
+                { icon: Calendar, value: `${t('settings.joined')}: ${patientData.registered}` },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <item.icon size={15} style={{ color: 'var(--mc-text-muted)' }} />
@@ -82,7 +82,7 @@ export default function PatientDetail() {
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="rounded-2xl p-6 shadow-mc-card" style={{ backgroundColor: 'var(--mc-surface)' }}>
             <h2 className="text-base font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--mc-text-primary)' }}>
-              <Activity size={16} style={{ color: 'var(--mc-orange)' }} /> Latest Vitals
+              <Activity size={16} style={{ color: 'var(--mc-orange)' }} /> {t('patientDetail.latestVitals')}
             </h2>
             <div className="grid grid-cols-2 gap-3">
               {patientData.vitals.map((v, i) => (
@@ -98,7 +98,7 @@ export default function PatientDetail() {
 
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
             className="rounded-2xl p-6 shadow-mc-card" style={{ backgroundColor: 'var(--mc-surface)' }}>
-            <h2 className="text-base font-semibold mb-3" style={{ color: 'var(--mc-text-primary)' }}>Allergies</h2>
+            <h2 className="text-base font-semibold mb-3" style={{ color: 'var(--mc-text-primary)' }}>{t('patientDetail.allergies')}</h2>
             <div className="flex flex-wrap gap-2">
               {patientData.allergies.map((a, i) => (
                 <span key={i} className="px-3 py-1 rounded-full text-xs font-semibold border" style={{ backgroundColor: 'var(--mc-red-bg)', color: 'var(--mc-red)', borderColor: 'rgba(239,68,68,0.25)' }}>{a}</span>
@@ -111,7 +111,7 @@ export default function PatientDetail() {
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
             className="rounded-2xl p-6 shadow-mc-card" style={{ backgroundColor: 'var(--mc-surface)' }}>
             <h2 className="text-base font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--mc-text-primary)' }}>
-              <Pill size={16} style={{ color: 'var(--mc-gold)' }} /> Current Medications
+              <Pill size={16} style={{ color: 'var(--mc-gold)' }} /> {t('patientDetail.currentMedications')}
             </h2>
             <div className="divide-y" style={{ borderColor: 'var(--mc-border)' }}>
               {patientData.medications.map((med, i) => (
@@ -136,7 +136,7 @@ export default function PatientDetail() {
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
             className="rounded-2xl p-6 shadow-mc-card" style={{ backgroundColor: 'var(--mc-surface)' }}>
             <h2 className="text-base font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--mc-text-primary)' }}>
-              <Clock size={16} style={{ color: 'var(--mc-blue)' }} /> Patient Timeline
+              <Clock size={16} style={{ color: 'var(--mc-blue)' }} /> {t('patientDetail.patientTimeline')}
             </h2>
             <PatientTimeline events={patientData.history} />
           </motion.div>
@@ -144,13 +144,13 @@ export default function PatientDetail() {
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
             className="rounded-2xl p-6 shadow-mc-card" style={{ backgroundColor: 'var(--mc-surface)' }}>
             <h2 className="text-base font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--mc-text-primary)' }}>
-              <CreditCard size={16} style={{ color: 'var(--mc-green)' }} /> Billing Summary
+              <CreditCard size={16} style={{ color: 'var(--mc-green)' }} /> {t('patientDetail.billingSummary')}
             </h2>
             <div className="grid grid-cols-3 gap-4">
               {[
-                { label: 'Total Invoices', value: '$1,095', color: 'var(--mc-gold)' },
-                { label: 'Paid', value: '$895', color: 'var(--mc-green)' },
-                { label: 'Pending', value: '$200', color: 'var(--mc-orange)' },
+                { label: t('patientDetail.totalInvoices'), value: '$1,095', color: 'var(--mc-gold)' },
+                { label: t('patientDetail.paid'), value: '$895', color: 'var(--mc-green)' },
+                { label: t('patientDetail.pending'), value: '$200', color: 'var(--mc-orange)' },
               ].map((s, i) => (
                 <div key={i} className="p-4 rounded-xl text-center" style={{ backgroundColor: 'var(--mc-bg)' }}>
                   <p className="text-lg font-bold" style={{ color: s.color }}>{s.value}</p>

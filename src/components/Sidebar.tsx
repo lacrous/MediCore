@@ -14,12 +14,12 @@ const navItems: { icon: React.ElementType; labelKey: string; path: string; roles
   { icon: CalendarCheck, labelKey: 'sidebar.appointments', path: '/appointments' },
   { icon: CalendarDays, labelKey: 'app.calendar', path: '/calendar' },
   { icon: Users, labelKey: 'sidebar.patients', path: '/patients' },
-  { icon: FileText, labelKey: 'Prescriptions', path: '/prescriptions', roles: ['admin', 'doctor', 'nurse'] },
-  { icon: FlaskConical, labelKey: 'Laboratory', path: '/lab-tests', roles: ['admin', 'doctor', 'nurse'] },
-  { icon: Stethoscope, labelKey: 'Doctors', path: '/doctors' },
+  { icon: FileText, labelKey: 'app.prescriptions', path: '/prescriptions', roles: ['admin', 'doctor', 'nurse'] },
+  { icon: FlaskConical, labelKey: 'app.laboratory', path: '/lab-tests', roles: ['admin', 'doctor', 'nurse'] },
+  { icon: Stethoscope, labelKey: 'app.doctors', path: '/doctors' },
   { icon: Pill, labelKey: 'sidebar.pharmacy', path: '/pharmacy' },
   { icon: CreditCard, labelKey: 'sidebar.billing', path: '/billing', roles: ['admin', 'receptionist'] },
-  { icon: ClipboardList, labelKey: 'Audit Logs', path: '/audit-logs', roles: ['admin'] },
+  { icon: ClipboardList, labelKey: 'app.auditLogs', path: '/audit-logs', roles: ['admin'] },
   { icon: Settings, labelKey: 'sidebar.settings', path: '/settings' },
 ];
 

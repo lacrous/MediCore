@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Stethoscope, Search, Star, Users, Clock, CalendarCheck, ChevronRight } from 'lucide-react';
 import Avatar from '@/components/Avatar';
 import DataTable from '@/components/DataTable';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface Doctor {
   id: string;
@@ -33,6 +34,7 @@ const statusColors: Record<string, { bg: string; color: string }> = {
 };
 
 export default function DoctorsPage() {
+  const { t } = useLanguage();
   const [search, setSearch] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
@@ -41,17 +43,16 @@ export default function DoctorsPage() {
   return (
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
-        <h1 className="text-2xl font-semibold tracking-tight" style={{ color: 'var(--mc-text-primary)' }}>Doctors Directory</h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--mc-text-secondary)' }}>Manage and view all medical staff</p>
+        <h1 className="text-2xl font-semibold tracking-tight" style={{ color: 'var(--mc-text-primary)' }}>{t('doctors.title')}</h1>
+        <p className="text-sm mt-1" style={{ color: 'var(--mc-text-secondary)' }}>{t('doctors.subtitle')}</p>
       </motion.div>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: 'Total Doctors', value: doctors.length, icon: Stethoscope, color: 'var(--mc-orange)' },
-          { label: 'Active Now', value: doctors.filter(d => d.status === 'Active').length, icon: Clock, color: 'var(--mc-green)' },
-          { label: 'Total Patients', value: doctors.reduce((s, d) => s + d.patients, 0), icon: Users, color: 'var(--mc-blue)' },
-          { label: 'On Leave', value: doctors.filter(d => d.status === 'On Leave').length, icon: CalendarCheck, color: 'var(--mc-amber)' },
+          { label: t('doctors.totalDoctors'), value: doctors.length, icon: Stethoscope, color: 'var(--mc-orange)' },
+          { label: t('doctors.activeNow'), value: doctors.filter(d => d.status === 'Active').length, icon: Clock, color: 'var(--mc-green)' },
+          { label: t('doctors.totalPatients'), value: doctors.reduce((s, d) => s + d.patients, 0), icon: Users, color: 'var(--mc-blue)' },
+          { label: t('doctors.onLeave'), value: doctors.filter(d => d.status === 'On Leave').length, icon: CalendarCheck, color: 'var(--mc-amber)' },
         ].map((s, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.05 }}
             className="rounded-xl p-4 shadow-mc-card" style={{ backgroundColor: 'var(--mc-surface)' }}>
@@ -62,16 +63,15 @@ export default function DoctorsPage() {
         ))}
       </div>
 
-      {/* Search + View Toggle */}
       <div className="flex items-center justify-between gap-4">
         <div className="relative flex-1 max-w-sm">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--mc-text-muted)' }} />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search doctors..."
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('doctors.searchPlaceholder') || 'Search doctors...'}
             className="w-full pl-9 pr-4 py-2 rounded-xl border text-sm outline-none" style={{ backgroundColor: 'var(--mc-bg)', borderColor: 'var(--mc-border)', color: 'var(--mc-text-primary)' }} />
         </div>
         <div className="flex items-center gap-1 p-1 rounded-lg border" style={{ backgroundColor: 'var(--mc-bg)', borderColor: 'var(--mc-border)' }}>
-          <button onClick={() => setViewMode('grid')} className="px-3 py-1 rounded-md text-xs font-medium transition-all" style={{ backgroundColor: viewMode === 'grid' ? 'var(--mc-surface)' : 'transparent', boxShadow: viewMode === 'grid' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', color: viewMode === 'grid' ? 'var(--mc-text-primary)' : 'var(--mc-text-muted)' }}>Grid</button>
-          <button onClick={() => setViewMode('list')} className="px-3 py-1 rounded-md text-xs font-medium transition-all" style={{ backgroundColor: viewMode === 'list' ? 'var(--mc-surface)' : 'transparent', boxShadow: viewMode === 'list' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', color: viewMode === 'list' ? 'var(--mc-text-primary)' : 'var(--mc-text-muted)' }}>List</button>
+          <button onClick={() => setViewMode('grid')} className="px-3 py-1 rounded-md text-xs font-medium transition-all" style={{ backgroundColor: viewMode === 'grid' ? 'var(--mc-surface)' : 'transparent', boxShadow: viewMode === 'grid' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', color: viewMode === 'grid' ? 'var(--mc-text-primary)' : 'var(--mc-text-muted)' }}>{t('doctors.grid')}</button>
+          <button onClick={() => setViewMode('list')} className="px-3 py-1 rounded-md text-xs font-medium transition-all" style={{ backgroundColor: viewMode === 'list' ? 'var(--mc-surface)' : 'transparent', boxShadow: viewMode === 'list' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none', color: viewMode === 'list' ? 'var(--mc-text-primary)' : 'var(--mc-text-muted)' }}>{t('doctors.list')}</button>
         </div>
       </div>
 
@@ -96,16 +96,16 @@ export default function DoctorsPage() {
                   <p className="text-lg font-bold" style={{ color: 'var(--mc-text-primary)' }}>{doc.rating}</p>
                   <div className="flex items-center justify-center gap-0.5">
                     <Star size={10} style={{ color: 'var(--mc-gold)' }} fill="var(--mc-gold)" />
-                    <span className="text-[10px]" style={{ color: 'var(--mc-text-muted)' }}>Rating</span>
+                    <span className="text-[10px]" style={{ color: 'var(--mc-text-muted)' }}>{t('doctors.rating')}</span>
                   </div>
                 </div>
                 <div>
                   <p className="text-lg font-bold" style={{ color: 'var(--mc-text-primary)' }}>{doc.patients}</p>
-                  <p className="text-[10px]" style={{ color: 'var(--mc-text-muted)' }}>Patients</p>
+                  <p className="text-[10px]" style={{ color: 'var(--mc-text-muted)' }}>{t('doctors.patients')}</p>
                 </div>
                 <div>
-                  <p className="text-lg font-bold" style={{ color: 'var(--mc-text-primary)' }}>{doc.experience}y</p>
-                  <p className="text-[10px]" style={{ color: 'var(--mc-text-muted)' }}>Experience</p>
+                  <p className="text-lg font-bold" style={{ color: 'var(--mc-text-primary)' }}>{doc.experience}{t('doctors.yrs')}</p>
+                  <p className="text-[10px]" style={{ color: 'var(--mc-text-muted)' }}>{t('doctors.experience')}</p>
                 </div>
               </div>
             </motion.div>
@@ -117,12 +117,12 @@ export default function DoctorsPage() {
           keyExtractor={r => r.id}
           searchKeys={['name', 'specialization', 'department']}
           columns={[
-            { key: 'name', header: 'Doctor', sortable: true, render: row => <div className="flex items-center gap-3"><Avatar name={row.avatar} size={32} /><span>{row.name}</span></div> },
-            { key: 'specialization', header: 'Specialization', sortable: true },
-            { key: 'department', header: 'Department', sortable: true },
-            { key: 'patients', header: 'Patients', sortable: true },
-            { key: 'rating', header: 'Rating', sortable: true, render: row => <div className="flex items-center gap-1"><Star size={12} style={{ color: 'var(--mc-gold)' }} fill="var(--mc-gold)" />{row.rating}</div> },
-            { key: 'status', header: 'Status', sortable: true, render: row => <span className="text-xs px-2 py-1 rounded-full font-medium" style={{ backgroundColor: statusColors[row.status].bg, color: statusColors[row.status].color }}>{row.status}</span> },
+            { key: 'name', header: t('doctors.title') || 'Doctor', sortable: true, render: row => <div className="flex items-center gap-3"><Avatar name={row.avatar} size={32} /><span>{row.name}</span></div> },
+            { key: 'specialization', header: t('doctors.specialization') || 'Specialization', sortable: true },
+            { key: 'department', header: t('doctors.department') || 'Department', sortable: true },
+            { key: 'patients', header: t('doctors.patients') || 'Patients', sortable: true },
+            { key: 'rating', header: t('doctors.rating') || 'Rating', sortable: true, render: row => <div className="flex items-center gap-1"><Star size={12} style={{ color: 'var(--mc-gold)' }} fill="var(--mc-gold)" />{row.rating}</div> },
+            { key: 'status', header: t('doctors.status') || 'Status', sortable: true, render: row => <span className="text-xs px-2 py-1 rounded-full font-medium" style={{ backgroundColor: statusColors[row.status].bg, color: statusColors[row.status].color }}>{row.status}</span> },
           ]}
         />
       )}

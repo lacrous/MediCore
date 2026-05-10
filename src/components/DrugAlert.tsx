@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Pill, ShieldAlert } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface Interaction {
   drug1: string;
@@ -28,6 +29,7 @@ interface Props {
 }
 
 export default function DrugAlert({ patientDrugs }: Props) {
+  const { t } = useLanguage();
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   if (!patientDrugs || patientDrugs.length < 2) return null;
 
@@ -43,8 +45,8 @@ export default function DrugAlert({ patientDrugs }: Props) {
       <div className="px-5 py-3 flex items-center gap-3" style={{ backgroundColor: 'var(--mc-red-bg)' }}>
         <ShieldAlert size={18} style={{ color: 'var(--mc-red)' }} />
         <div className="flex-1">
-          <h3 className="text-sm font-semibold" style={{ color: 'var(--mc-red)' }}>Drug Interaction Alert</h3>
-          <p className="text-xs" style={{ color: 'var(--mc-text-secondary)' }}>{matches.length} potential interaction(s) detected</p>
+          <h3 className="text-sm font-semibold" style={{ color: 'var(--mc-red)' }}>{t('patientDetail.drugInteractionAlert')}</h3>
+          <p className="text-xs" style={{ color: 'var(--mc-text-secondary)' }}>{matches.length} {t('patientDetail.drugInteractionDesc')}</p>
         </div>
       </div>
       <div className="divide-y" style={{ borderColor: 'var(--mc-border)' }}>

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { AlertTriangle, ShieldCheck, ShieldAlert, Shield } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface Props {
   age: number;
@@ -9,7 +10,8 @@ interface Props {
 }
 
 export default function RiskScore({ age, hasChronic, abnormalVitals, allergies }: Props) {
-  // Simple risk calculation
+  const { t } = useLanguage();
+
   let score = 0;
   if (age > 65) score += 2;
   else if (age > 45) score += 1;
@@ -18,10 +20,10 @@ export default function RiskScore({ age, hasChronic, abnormalVitals, allergies }
   score += Math.min(allergies, 2);
 
   const getRisk = () => {
-    if (score >= 5) return { label: 'High Risk', color: 'var(--mc-red)', bg: 'var(--mc-red-bg)', icon: ShieldAlert, desc: 'Multiple risk factors detected. Close monitoring recommended.' };
-    if (score >= 3) return { label: 'Medium Risk', color: 'var(--mc-amber)', bg: 'var(--mc-amber-bg)', icon: AlertTriangle, desc: 'Some risk factors present. Regular follow-up advised.' };
-    if (score >= 1) return { label: 'Low Risk', color: 'var(--mc-blue)', bg: 'var(--mc-blue-bg)', icon: Shield, desc: 'Minimal risk factors. Routine care sufficient.' };
-    return { label: 'Very Low Risk', color: 'var(--mc-green)', bg: 'var(--mc-green-bg)', icon: ShieldCheck, desc: 'No significant risk factors detected.' };
+    if (score >= 5) return { label: t('patientDetail.riskHigh') || 'High Risk', color: 'var(--mc-red)', bg: 'var(--mc-red-bg)', icon: ShieldAlert, desc: t('patientDetail.riskHighDesc') || 'Multiple risk factors detected. Close monitoring recommended.' };
+    if (score >= 3) return { label: t('patientDetail.riskMedium') || 'Medium Risk', color: 'var(--mc-amber)', bg: 'var(--mc-amber-bg)', icon: AlertTriangle, desc: t('patientDetail.riskMediumDesc') || 'Some risk factors present. Regular follow-up advised.' };
+    if (score >= 1) return { label: t('patientDetail.riskLow') || 'Low Risk', color: 'var(--mc-blue)', bg: 'var(--mc-blue-bg)', icon: Shield, desc: t('patientDetail.riskLowDesc') || 'Minimal risk factors. Routine care sufficient.' };
+    return { label: t('patientDetail.riskVeryLow') || 'Very Low Risk', color: 'var(--mc-green)', bg: 'var(--mc-green-bg)', icon: ShieldCheck, desc: t('patientDetail.riskVeryLowDesc') || 'No significant risk factors detected.' };
   };
 
   const risk = getRisk();
@@ -37,8 +39,8 @@ export default function RiskScore({ age, hasChronic, abnormalVitals, allergies }
           <Icon size={18} style={{ color: risk.color }} />
         </div>
         <div>
-          <h3 className="text-sm font-semibold" style={{ color: 'var(--mc-text-primary)' }}>Patient Risk Score</h3>
-          <p className="text-xs" style={{ color: 'var(--mc-text-muted)' }}>Based on age, conditions, vitals</p>
+          <h3 className="text-sm font-semibold" style={{ color: 'var(--mc-text-primary)' }}>{t('patientDetail.patientRiskScore')}</h3>
+          <p className="text-xs" style={{ color: 'var(--mc-text-muted)' }}>{t('patientDetail.riskScoreDesc')}</p>
         </div>
         <div className="ms-auto text-end">
           <p className="text-lg font-bold" style={{ color: risk.color }}>{score}/{maxScore}</p>

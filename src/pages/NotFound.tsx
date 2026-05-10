@@ -5,7 +5,7 @@ import { useLanguage } from '@/context/LanguageContext';
 
 export default function NotFound() {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   return (
     <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: 'var(--mc-bg)' }}>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
@@ -16,20 +16,20 @@ export default function NotFound() {
             <Search size={48} style={{ color: 'var(--mc-orange)' }} />
           </div>
         </div>
-        <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--mc-text-primary)' }}>Page Not Found</h1>
+        <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--mc-text-primary)' }}>{t('app.pageNotFound')}</h1>
         <p className="text-sm mb-8" style={{ color: 'var(--mc-text-secondary)' }}>
-          The page you are looking for doesn't exist or has been moved.
+          {t('app.pageNotFoundMessage')}
         </p>
         <div className="flex items-center justify-center gap-3">
           <button onClick={() => navigate(-1)}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all border hover:bg-[var(--mc-surface)]"
             style={{ borderColor: 'var(--mc-border)', color: 'var(--mc-text-primary)' }}>
-            <ArrowLeft size={16} /> Go Back
+            <ArrowLeft size={16} className={isRTL ? 'rotate-180' : ''} /> {t('app.goBack')}
           </button>
           <button onClick={() => navigate('/')}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-90"
             style={{ backgroundColor: 'var(--mc-orange)', color: 'white' }}>
-            <Home size={16} /> {t('sidebar.dashboard')}
+            <Home size={16} /> {t('app.goDashboard')}
           </button>
         </div>
       </motion.div>
